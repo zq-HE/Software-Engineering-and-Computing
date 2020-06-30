@@ -1,5 +1,6 @@
 package com.example.hotel.vo;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -11,8 +12,10 @@ public class OrderVO {
     private Integer userId;
     private Integer hotelId;
     private String hotelName;
-    private String checkInDate;
-    private String checkOutDate;
+    private Date checkInDate;
+    private Date checkOutDate;
+//    private String tmpIn;
+//    private String tmpOut;
     private String roomType;
     private Integer roomNum;
     private Integer peopleNum;
@@ -46,19 +49,20 @@ public class OrderVO {
     public void setHotelId(Integer hotelId) {
         this.hotelId = hotelId;
     }
-    public String getCheckInDate() {
+
+    public Date getCheckInDate() {
         return checkInDate;
     }
 
-    public void setCheckInDate(String checkInDate) {
+    public void setCheckInDate(Date checkInDate) {
         this.checkInDate = checkInDate;
     }
 
-    public String getCheckOutDate() {
+    public Date getCheckOutDate() {
         return checkOutDate;
     }
 
-    public void setCheckOutDate(String checkOutDate) {
+    public void setCheckOutDate(Date checkOutDate) {
         this.checkOutDate = checkOutDate;
     }
 
@@ -142,4 +146,9 @@ public class OrderVO {
     public void setOrderState(String orderState) {
         this.orderState = orderState;
     }
+
+//    public Date trans(String tmp){
+//        SimpleDateFormat sf = new SimpleDateFormat("yyyy-mm-dd");
+//
+//    }
 }

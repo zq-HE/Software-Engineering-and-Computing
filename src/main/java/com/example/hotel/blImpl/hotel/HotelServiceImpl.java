@@ -16,6 +16,7 @@ import com.example.hotel.po.Order;
 import com.example.hotel.po.User;
 import com.example.hotel.util.ServiceException;
 import com.example.hotel.vo.CouponVO;
+import com.example.hotel.vo.ResponseVO;
 import com.example.hotel.vo.HotelVO;
 import com.example.hotel.vo.RoomVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class HotelServiceImpl implements HotelService {
+
+    private final static String DELETE_ERROR = "删除失败";
 
     @Autowired
     private HotelMapper hotelMapper;
@@ -42,7 +45,7 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public void addHotel(HotelVO hotelVO) throws ServiceException {
         User manager = accountService.getUserInfo(hotelVO.getManagerId());
-        if(manager == null || !manager.getUserType().equals(UserType.HotelManager)){
+        if (manager == null || !manager.getUserType().equals(UserType.HotelManager)) {
             throw new ServiceException("管理员不存在或者无权限！创建酒店失败！");
         }
         Hotel hotel = new Hotel();
@@ -59,18 +62,50 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public void updateRoomInfo(Integer hotelId, String roomType, Integer rooms) {
-        roomService.updateRoomInfo(hotelId,roomType,rooms);
+        roomService.updateRoomInfo(hotelId, roomType, rooms);
     }
 
     @Override
     public int getRoomCurNum(Integer hotelId, String roomType) {
-        return roomService.getRoomCurNum(hotelId,roomType);
+        return roomService.getRoomCurNum(hotelId, roomType);
     }
 
     @Override
-    public List<HotelVO> retrieveHotels() {
+    public List<HotelVO> retrieveHotels(String _userId) {
+        try {
+            int userId = Integer.parseInt(_userId);
+            List<HotelVO> hotels = hotelMapper.selectAllHotel();
+            List<Order> orders = orderService.getUserOrders(userId);
+            for(HotelVO hotelVO: hotels){
+                hotelVO.setHasBooked("未曾预订");
+                hotelVO.setHasCanceled("未曾撤销");
+                hotelVO.setHasExeced("未曾执行");
+            }
+            for (int i = 0; i < hotels.size(); i++) {
+                HotelVO hotelVO = hotels.get(i);
+                for (int j = 0; j < orders.size(); j++) {
+                    Order order = orders.get(j);
+                    if (order.getHotelId().equals(hotelVO.getId()) &&
+                            (order.getOrderState().compareTo("已预订") == 0
+                                    || order.getOrderState().compareTo("已执行") == 0)) {
+                        hotelVO.setHasBooked("曾预订");
+                    }
+                    if (order.getHotelId().equals(hotelVO.getId()) &&
+                            (order.getOrderState().compareTo("已撤销") == 0)) {
+                        hotelVO.setHasCanceled("曾撤销");
+                    }
+                    if (order.getHotelId().equals(hotelVO.getId())
+                            && order.getOrderState().compareTo("已执行") == 0) {
+                        hotelVO.setHasExeced("曾执行");
+                    }
+                    hotels.set(i,hotelVO);
+                }
+            }
+            return hotels;
+        } catch (Exception e) {
+            return hotelMapper.selectAllHotel();
+        }
 
-        return hotelMapper.selectAllHotel();
     }
 
     @Override
@@ -90,14 +125,35 @@ public class HotelServiceImpl implements HotelService {
 
         return hotelVO;
     }
-    
-    /**
-     * @param hotelId
-     * @return
-     */
+
     @Override
-    public List<Order> getHotelOrders(Integer hotelId) {
-        List<Order> orders = orderService.getAllOrders();
-        return orders.stream().filter(order -> order.getHotelId().equals(hotelId)).collect(Collectors.toList());
+    public ResponseVO deleteHotel(int hotelId) {
+        try {
+            hotelMapper.deleteHotel(hotelId);
+            roomService.deleteRoomByHotelId(hotelId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return ResponseVO.buildFailure(DELETE_ERROR);
+        }
+        return ResponseVO.buildSuccess(true);
     }
+
+    @Override
+    public void updateHotelInfo(Hotel hotel) {
+        try {
+            hotelMapper.updateHotel(hotel);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    //    /**
+////     * @param hotelId
+////     * @return
+////     */
+////    @Override
+////    public List<Order> getHotelOrders(Integer hotelId) {
+////        List<Order> orders = orderService.getAllOrders();
+////        return orders.stream().filter(order -> order.getHotelId().equals(hotelId)).collect(Collectors.toList());
+////    }
 }

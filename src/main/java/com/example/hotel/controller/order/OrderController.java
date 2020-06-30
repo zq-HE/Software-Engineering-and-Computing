@@ -39,5 +39,26 @@ public class OrderController {
         return orderService.annulOrder(orderid);
     }
 
+    @GetMapping("/{orderid}/doOrder")
+    public ResponseVO doOrder(@PathVariable int orderid){
+        return orderService.doOrder(orderid);
+    }
+
+    @GetMapping("/scoreOrder")
+    public ResponseVO scoreOrder(@RequestParam int orderId,
+                                 @RequestParam int value){
+        return orderService.scoreOrder(value,orderId);
+    }
+
+    @GetMapping("/{hotelId}/allOrders")
+    public ResponseVO retrieveHotelOrders(@PathVariable Integer hotelId) {
+        return ResponseVO.buildSuccess(orderService.getHotelOrders(hotelId));
+    }
+
+    @GetMapping("/{orderid}/deleteOrder")
+    public ResponseVO deleteOrder(@PathVariable int orderid){
+        return orderService.deleteOrder(orderid);
+    }
+
 
 }

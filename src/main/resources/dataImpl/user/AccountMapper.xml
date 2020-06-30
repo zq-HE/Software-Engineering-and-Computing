@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.hotel.data.user.AccountMapper">
     <insert id="createNewAccount" parameterType="com.example.hotel.po.User" useGeneratedKeys="true" keyProperty="id">
-        insert into User(email,password,username,phonenumber,credit,usertype)
-        values(#{email},#{password},#{userName},#{phoneNumber},#{credit},#{userType})
+        insert into User(email,password,username,phonenumber,birthday,credit,usertype)
+        values(#{email},#{password},#{userName},#{phoneNumber},#{birthday},#{credit},#{userType})
+    </insert>
+    <insert id="insertCreditRecord" parameterType="com.example.hotel.po.CreditRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into CreditRecord(userId,changeValue,restValue,changeTime,reason)
+        values (#{userId},#{changeValue},#{restValue},#{changeTime},#{reason})
     </insert>
     <select id="getAccountByName" resultMap="User">
         select * from User where email=#{email}
@@ -12,9 +16,19 @@
         select * from User where id=#{id}
     </select>
     <update id="updateAccount">
-        update User set password=#{password},username=#{userName},phonenumber=#{phoneNumber}
+        update User set password=#{password},username=#{userName},phonenumber=#{phoneNumber},birthday=#{birthday}
         where id=#{id}
     </update>
+    <update id="registerVip">
+        update User set vipType=#{vipType},vipInfo=#{vipInfo}
+        where id=#{id}
+    </update>
+    <update id="updateCredit">
+        update User set credit=#{credit} where id=#{id}
+    </update>
+    <select id="getCreditRecord" resultType="com.example.hotel.po.CreditRecord">
+        select * from CreditRecord where userId=#{userId}
+    </select>
 
 
     <resultMap id="User" type="com.example.hotel.po.User">
@@ -23,6 +37,7 @@
         <result column="password" property="password"></result>
         <result column="username" property="userName"></result>
         <result column="phonenumber" property="phoneNumber"></result>
+        <result column="birthday" property="birthday"></result>
         <result column="credit" property="credit"></result>
         <result column="usertype" property="userType"></result>
     </resultMap>

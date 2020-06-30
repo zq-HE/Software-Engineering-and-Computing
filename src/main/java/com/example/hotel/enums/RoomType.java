@@ -14,4 +14,6 @@ public enum RoomType {
     public String toString() {
         return value;
     }
+
+    public String getRawString(){return super.toString();}
 }

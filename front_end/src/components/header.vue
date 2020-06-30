@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="label">
-            <img src="@/assets/logo.svg" class="logo" alt="logo" @click="jumpToHome">
+            <img src="http://cos.nju.world:9000/public-pictures/NJU_logo_name.png" class="logo" alt="logo" @click="jumpToHome">
             <span class="title">NJUSE 酒店管理系统</span>
             
         </div>
@@ -21,21 +21,23 @@
             </a-menu-item>
             <a-menu-item key="4" @click="selectMenu" v-if="userInfo.userType=='Admin'">
                 <router-link :to="{ name: 'manageUser'}">
-                     <a-icon type="user" />账户管理
+                     <a-icon type="switcher" />账户管理
                 </router-link>
             </a-menu-item>
         </a-menu>
         <div class="logout">
             <a-dropdown placement="bottomCenter">
                 <div class="user">
-                    <a-avatar src="./defaultAvatar.png"></a-avatar>
+                    <a-avatar src="http://cos.nju.world:9000/public-pictures/NJU_blackBG.png"></a-avatar>
                     <span style="font-size: 14px">{{ userInfo.userName }}</span>
                     <a-icon style="margin-left: 3px; font-size: 16px" type="down"></a-icon>
                 </div>
                 <a-menu slot="overlay">
-                <a-menu-item  @click="jumpToHome()">
-                    <a-icon type="home"></a-icon>
-                    首页
+                <a-menu-item>
+                    <router-link to="/hotel/hotelList">
+                        <a-icon type="home" ></a-icon>
+                        首页
+                    </router-link>
                 </a-menu-item>
                 <a-menu-item @click="jumpToUserInfo()">
                     <a-icon type="profile"></a-icon>

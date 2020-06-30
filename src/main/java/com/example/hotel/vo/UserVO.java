@@ -2,6 +2,8 @@ package com.example.hotel.vo;
 
 import com.example.hotel.enums.UserType;
 
+import java.util.Date;
+
 /**
  * @author fjj
  * @date 2019/4/11 3:22 PM
@@ -12,8 +14,11 @@ public class UserVO {
     private String password;
     private String userName;
     private String phoneNumber;
+    private Date birthday;
     private double credit;
     private UserType userType;
+    private String vipType;
+    private String vipInfo;
 
     public Integer getId() {
         return id;
@@ -69,5 +74,25 @@ public class UserVO {
 
     public void setUserType(UserType userType) {
         this.userType = userType;
+    }
+
+    public Date getBirthday(){return this.birthday;}
+
+    public void setBirthday(Date birthday){this.birthday=birthday;}
+
+    public String getVipType() {
+        return vipType;
+    }
+
+    public void setVipType(String vipType) {
+        this.vipType = vipType;
+    }
+
+    public String getVipInfo() {
+        return vipInfo;
+    }
+
+    public void setVipInfo(String vipInfo) {
+        this.vipInfo = vipInfo;
     }
 }

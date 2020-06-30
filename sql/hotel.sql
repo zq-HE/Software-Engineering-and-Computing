@@ -25,19 +25,40 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `Coupon`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+
+
+DROP TABLE IF EXISTS `CreditRecord`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `CreditRecord`(
+                               `id` int(11) NOT NULL AUTO_INCREMENT,
+                               `userId` int(11) DEFAULT NULL,
+                               `changeValue` DOUBLE(65,2) DEFAULT NULL,
+                               `restValue` DOUBLE(65,2) DEFAULT NULL,
+                               `changeTime` date DEFAULT NULL,
+                               `reason` varchar(255) DEFAULT NULL,
+                               PRIMARY KEY (`id`)
+)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+/*!40000 ALTER TABLE `CreditRecord` DISABLE KEYS */;
+/*!40000 ALTER TABLE `CreditRecord` ENABLE KEYS */;
+
+
 CREATE TABLE `Coupon` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `description` varchar(255) DEFAULT NULL,
-  `hotelId` int(11) DEFAULT '-1',
-  `couponType` int(11) NOT NULL,
-  `couponName` varchar(255) NOT NULL,
-  `target_money` int(11) DEFAULT NULL,
-  `discount` double DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `start_time` datetime DEFAULT NULL,
-  `end_time` datetime DEFAULT NULL,
-  `discount_money` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                          `id` int(11) NOT NULL AUTO_INCREMENT,
+                          `description` varchar(255) DEFAULT NULL,
+                          `hotelId` int(11) DEFAULT '-1',
+                          `couponType` int(11) NOT NULL,
+                          `couponName` varchar(255) NOT NULL,
+                          `target_money` int(11) DEFAULT NULL,
+                          `target_room` int(11) DEFAULT NULL,
+                          `discount` double DEFAULT NULL,
+                          `status` int(11) DEFAULT NULL,
+                          `start_time` date DEFAULT NULL,
+                          `end_time` date DEFAULT NULL,
+                          `discount_money` int(11) DEFAULT NULL,
+                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -46,7 +67,7 @@ CREATE TABLE `Coupon` (
 --
 BEGIN;
 /*!40000 ALTER TABLE `Coupon` DISABLE KEYS */;
-INSERT INTO `Coupon` VALUES (2,'满500-100优惠',2,3,'满减优惠券',500,0,1,NULL,NULL,100);
+INSERT INTO `Coupon` VALUES (2,'满500-100优惠',2,3,'满减优惠券',500,NULL,0,1,NULL,NULL,100);
 /*!40000 ALTER TABLE `Coupon` ENABLE KEYS */;
 COMMIT;
 
@@ -58,16 +79,17 @@ DROP TABLE IF EXISTS `Hotel`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Hotel` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `hotelName` varchar(255) NOT NULL,
-  `hotelDescription` varchar(255) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `bizRegion` varchar(255) DEFAULT NULL,
-  `hotelStar` varchar(255) DEFAULT NULL,
-  `phoneNum` int(11) DEFAULT NULL,
-  `rate` double DEFAULT NULL,
-  `manager_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                         `id` int(11) NOT NULL AUTO_INCREMENT,
+                         `hotelName` varchar(255) NOT NULL,
+                         `hotelDescription` varchar(255) DEFAULT NULL,
+                         `address` varchar(255) DEFAULT NULL,
+                         `bizRegion` varchar(255) DEFAULT NULL,
+                         `hotelStar` varchar(255) DEFAULT NULL,
+                         `phoneNum` int(11) DEFAULT NULL,
+                         `rate` double DEFAULT NULL,
+                         `manager_id` int(11) DEFAULT NULL,
+                         `scoreNum`int(11) DEFAULT 0,
+                         PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -77,7 +99,7 @@ CREATE TABLE `Hotel` (
 
 BEGIN;
 /*!40000 ALTER TABLE `Hotel` DISABLE KEYS */;
-INSERT INTO `Hotel` VALUES (1,'汉庭酒店','欢迎您入住',NULL,'XiDan','Four',1829373819,4.8,1),(2,'儒家酒店','欢迎您入住','南京市鼓楼区珠江路268号','XiDan','Four',1829373819,4.8,2),(3,'桂圆酒店','欢迎您入住','南京市栖霞区珠江路268号','XiDan','Four',1829553719,4.8,6);
+INSERT INTO `Hotel` VALUES (1,'汉庭酒店','欢迎您入住',NULL,'XiDan','Four',1829373819,4.8,1,0),(2,'儒家酒店','欢迎您入住','南京市鼓楼区珠江路268号','XiDan','Four',1829373819,4.8,2,0),(3,'桂圆酒店','欢迎您入住','南京市栖霞区珠江路268号','XiDan','Four',1829553719,4.8,6,0);
 /*!40000 ALTER TABLE `Hotel` ENABLE KEYS */;
 COMMIT;
 
@@ -89,22 +111,22 @@ DROP TABLE IF EXISTS `OrderList`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `OrderList` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) DEFAULT NULL,
-  `hotelId` int(11) DEFAULT NULL,
-  `hotelName` varchar(255) DEFAULT NULL,
-  `checkInDate` varchar(255) DEFAULT NULL,
-  `checkOutDate` varchar(255) DEFAULT NULL,
-  `roomType` varchar(255) DEFAULT NULL,
-  `roomNum` int(255) DEFAULT NULL,
-  `peopleNum` int(255) DEFAULT NULL,
-  `haveChild` tinytext,
-  `createDate` varchar(255) DEFAULT NULL,
-  `price` decimal(65,0) DEFAULT NULL,
-  `clientName` varchar(255) DEFAULT NULL,
-  `phoneNumber` varchar(255) DEFAULT NULL,
-  `orderState` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                             `id` int(11) NOT NULL AUTO_INCREMENT,
+                             `userId` int(11) DEFAULT NULL,
+                             `hotelId` int(11) DEFAULT NULL,
+                             `hotelName` varchar(255) DEFAULT NULL,
+                             `checkInDate` date DEFAULT NULL,
+                             `checkOutDate` date DEFAULT NULL,
+                             `roomType` varchar(255) DEFAULT NULL,
+                             `roomNum` int(255) DEFAULT NULL,
+                             `peopleNum` int(255) DEFAULT NULL,
+                             `haveChild` tinytext,
+                             `createDate` varchar(255) DEFAULT NULL,
+                             `price` decimal(65,0) DEFAULT NULL,
+                             `clientName` varchar(255) DEFAULT NULL,
+                             `phoneNumber` varchar(255) DEFAULT NULL,
+                             `orderState` varchar(255) DEFAULT NULL,
+                             PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -123,13 +145,13 @@ DROP TABLE IF EXISTS `Room`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `Room` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `price` double DEFAULT NULL,
-  `curNum` int(11) DEFAULT NULL,
-  `total` int(11) DEFAULT NULL,
-  `hotel_id` int(11) DEFAULT NULL,
-  `roomType` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `price` double DEFAULT NULL,
+                        `curNum` int(11) DEFAULT NULL,
+                        `total` int(11) DEFAULT NULL,
+                        `hotel_id` int(11) DEFAULT NULL,
+                        `roomType` varchar(50) DEFAULT NULL,
+                        PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -139,7 +161,7 @@ CREATE TABLE `Room` (
 
 BEGIN;
 /*!40000 ALTER TABLE `Room` DISABLE KEYS */;
-INSERT INTO `Room` VALUES (2,199,20,20,1,'BigBed'),(3,299,30,30,1,'DoubleBed'),(4,399,10,10,1,'Family'),(5,122,7,0,1,'BigBed'),(6,399,10,10,2,'Family');
+INSERT INTO `Room` VALUES (2,199,20,20,1,'BigBed'),(3,299,30,30,1,'DoubleBed'),(4,399,10,10,1,'Family'),(6,399,10,10,2,'Family');
 /*!40000 ALTER TABLE `Room` ENABLE KEYS */;
 COMMIT;
 
@@ -151,14 +173,17 @@ DROP TABLE IF EXISTS `User`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `User` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) DEFAULT NULL,
-  `password` varchar(11) NOT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `phonenumber` varchar(255) DEFAULT NULL,
-  `credit` double(255,0) DEFAULT NULL,
-  `usertype` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `email` varchar(255) DEFAULT NULL,
+                        `password` varchar(11) NOT NULL,
+                        `username` varchar(255) DEFAULT NULL,
+                        `phonenumber` varchar(255) DEFAULT NULL,
+                        `birthday` date DEFAULT NULL,
+                        `credit` double(255,0) DEFAULT NULL,
+                        `usertype` varchar(255) DEFAULT NULL,
+                        `vipType` varchar(255) DEFAULT NULL,
+                        `vipInfo` varchar(255) DEFAULT NULL,
+                        PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -168,7 +193,7 @@ CREATE TABLE `User` (
 
 BEGIN;
 /*!40000 ALTER TABLE `User` DISABLE KEYS */;
-INSERT INTO `User` VALUES (4,'1012681@qq.com','123456','测试一号','12345678919',100,'Client'),(5,'123@qq.com','123456','测试二号','12345678911',100,'Client'),(6,'333@qq.com','123456',NULL,NULL,NULL,'HotelManager');
+INSERT INTO `User` VALUES (4,'1012681@qq.com','123456','测试一号','12345678919','2000-05-07',100,'Client',null,null),(5,'123@qq.com','123456','测试二号','12345678911','2000-05-07',100,'Client',null,null),(6,'333@qq.com','123456',NULL,NULL,'2000-05-07',NULL,'HotelManager',null,null);
 /*!40000 ALTER TABLE `User` ENABLE KEYS */;
 COMMIT;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

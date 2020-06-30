@@ -16,8 +16,21 @@
         select * from OrderList where id=#{orderid}
     </select>
    <!--取消订单的数据库操作-->
+    <update id="annulOrder">
+        update OrderList set orderState="已撤销" where id=#{orderid}
+    </update>
 
+   <!--执行订单的数据库操作-->
+    <update id="doOrder">
+        update OrderList set orderState="已执行" where id=#{orderid}
+    </update>
+    <update id="updateScore">
+        update OrderList set orderState="已评价" where id=#{orderId}
+    </update>
 
+    <delete id="deleteOrder">
+        delete from OrderList where id=#{orderid}
+    </delete>
 
     <resultMap id="Order" type="com.example.hotel.po.Order">
     </resultMap>

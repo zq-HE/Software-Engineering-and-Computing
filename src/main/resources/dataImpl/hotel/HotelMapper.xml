@@ -13,6 +13,26 @@
     <select id="selectById" resultMap="Hotel">
         select * from Hotel where id=#{id}
     </select>
+    <delete id="deleteHotel">
+        delete from Hotel where id=#{hotelId}
+    </delete>
+    <update id="updateHotel" parameterType="com.example.hotel.po.Hotel">
+        update Hotel
+        set
+        address=#{hotel.address},
+        bizRegion=#{hotel.bizRegion},
+        hotelDescription=#{hotel.description},
+        hotelStar=#{hotel.hotelStar}
+        where id=#{hotel.id}
+    </update>
+
+    <update id="updateScore">
+        update Hotel
+        set
+        scoreNum=scoreNum+1,
+        rate=#{value}
+        where id=#{hotelId}
+    </update>
 
 
     <resultMap id="Hotel" type="com.example.hotel.vo.HotelVO">

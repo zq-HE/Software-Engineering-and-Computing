@@ -19,6 +19,15 @@ public class Hotel {
      * 酒店管理员id
      */
     private Integer managerId;
+    private Integer scoreNum;
+
+    public Integer getScoreNum() {
+        return scoreNum;
+    }
+
+    public void setScoreNum(Integer scoreNum) {
+        this.scoreNum = scoreNum;
+    }
 
     public Integer getId() {
         return id;

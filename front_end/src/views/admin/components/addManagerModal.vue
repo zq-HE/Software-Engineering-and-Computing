@@ -1,29 +1,51 @@
 <template>
     <a-modal
         :visible="addManagerModalVisible"
-        title="添加用户"
+        title="添加管理员"
         cancelText="取消"
         okText="确定"
         @cancel="cancel"
         @ok="handleSubmit"
     >
     <a-Form :form="form">
-        <a-form-item v-bind="formItemLayout" label="用户邮箱">
-                <a-input
-                    v-decorator="[
-                        'email',
-                        { rules: [{required: true, message: '请输入用户邮箱', }] }
-                    ]"
+        <a-form-item v-bind="formItemLayout" label="管理员邮箱">
+            <a-input
+                v-decorator="[
+                    'email',
+                    { rules: [{required: true, message: '请输入管理员邮箱', }] }
+                ]"
+            />
+        </a-form-item>
+        <a-form-item v-bind="formItemLayout" label="密码">
+            <a-input
+                v-decorator="[
+                    'password',
+                    { rules: [{required: true, message: '请输入密码', }] }
+                ]"
                 />
-            </a-form-item>
-            <a-form-item v-bind="formItemLayout" label="密码">
-                <a-input
+        </a-form-item >
+        <a-form-item v-bind="formItemLayout" label="用户名">
+            <a-input
                     v-decorator="[
-                        'password',
-                        { rules: [{required: true, message: '请输入密码', }] }
-                    ]"
-                />
-            </a-form-item >
+                    'username',
+                    { rules: [{required: true, message: '请输入用户名', }] }
+                ]"
+            />
+        </a-form-item >
+        <a-form-item v-bind="formItemLayout" label="电话号码">
+            <a-input
+                    v-decorator="[
+                    'phonenumber',
+                    { rules: [{required: true, message: '请输入电话号码', }] }
+                ]"
+            />
+        </a-form-item >
+        <a-form-item v-bind="formItemLayout" label="生日">
+            <a-date-picker
+                    @change="onChange"
+                    placeholder="请选择生日"
+            />
+        </a-form-item>
     </a-Form>
     </a-modal>
 </template>
@@ -33,6 +55,7 @@ export default {
     name: 'addManagerModal',
     data() {
         return {
+            birthday:"",
             formItemLayout: {
                 labelCol: {
                     xs: { span: 12 },
@@ -75,12 +98,19 @@ export default {
                 if (!err) {
                     const data = {
                         email: this.form.getFieldValue('email'),
-                        password: this.form.getFieldValue('password')
+                        password: this.form.getFieldValue('password'),
+                        username: this.form.getFieldValue('username'),
+                        phonenumber: this.form.getFieldValue('phonenumber'),
+                        birthday:this.birthday
                     }
                     this.set_addManagerParams(data)
                     this.addManager()
                 }
             });
+        },
+        onChange(date, dateString) {
+            console.log(date, dateString);
+            this.birthday=dateString;
         },
     }
 }

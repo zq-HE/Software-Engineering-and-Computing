@@ -11,18 +11,36 @@ const getters = {
   orderModalVisible: state => state.hotel.orderModalVisible,
   currentOrderRoom: state => state.hotel.currentOrderRoom,
   orderMatchCouponList: state => state.hotel.orderMatchCouponList,
+  creditRecord:state=>state.user.creditRecord,
+  searchingStr: state=>state.hotel.searchingStr,
   //admin
   managerList: state => state.admin.managerList,
+  userList: state => state.admin.userList,
   addManagerModalVisible: state => state.admin.addManagerModalVisible,
+  addUserModalVisible: state => state.admin.addUserModalVisible,
+  addCreditModalVisible: state => state.admin.addCreditModalVisible,
   addManagerParams: state => state.admin.addManagerParams,
+  updateManagerParams: state => state.admin.updateManagerParams,
+  updateUserParams: state => state.admin.updateUserParams,
+  addUserParams: state => state.admin.addUserParams,
+  activeUserId: state => state.admin.activeUserId,
+  beforeCredit: state => state.admin.beforeCredit,
+  updateManagerModalVisible: state=>state.admin.updateManagerModalVisible,
+  updateUserModalVisible: state=>state.admin.updateUserModalVisible,
+  currentManager: state=>state.admin.currentManager,
+  currentUser: state=>state.admin.currentUser,
+
   //hotelManager
   orderList: state => state.hotelManager.orderList,
   addHotelModalVisible: state => state.hotelManager.addHotelModalVisible,
   addRoomModalVisible: state => state.hotelManager.addRoomModalVisible,
   couponVisible: state => state.hotelManager.couponVisible,
+  InfoVisible:state => state.hotelManager.InfoVisible,
   addCouponVisible: state => state.hotelManager.addCouponVisible,
+  deleteCouponVisible: state => state.hotelManager.deleteCouponVisible,
   activeHotelId: state => state.hotelManager.activeHotelId,
   couponList: state => state.hotelManager.couponList,
+  currentHotel: state => state.hotelManager.currentHotel,
   }
   
   export default getters

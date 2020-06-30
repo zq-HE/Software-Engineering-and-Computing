@@ -2,6 +2,10 @@ package com.example.hotel.bl.user;
 
 import com.example.hotel.po.User;
 import com.example.hotel.vo.*;
+import com.example.hotel.po.CreditRecord;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author huwen
@@ -15,6 +19,8 @@ public interface AccountService {
      * @return
      */
     ResponseVO registerAccount(UserVO userVO);
+
+    List<CreditRecord> getCreditRecord(int userId);
 
     /**
      * 用户登录，登录成功会将用户信息保存再session中
@@ -38,7 +44,7 @@ public interface AccountService {
      * @param phonenumber
      * @return
      */
-    ResponseVO updateUserInfo(int id, String password,String username,String phonenumber);
+    ResponseVO updateUserInfo(int id, String password, String username, String phonenumber, Date birthday);
 
-
+    ResponseVO registerVip(int id,String vipType, String vipInfo);
 }

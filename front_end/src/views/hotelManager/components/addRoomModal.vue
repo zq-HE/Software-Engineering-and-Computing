@@ -36,6 +36,7 @@
 </template>
 <script>
 import { mapGetters, mapMutations, mapActions } from 'vuex'
+import {message} from "ant-design-vue";
 export default {
     name: 'addRoomModal',
     data() {
@@ -86,8 +87,21 @@ export default {
                         curNum: Number(this.form.getFieldValue('roomNum')),
                         hotelId: this.activeHotelId,
                     }
-                    this.set_addRoomParams(data)
-                    this.addRoom()
+                    if(this.form.getFieldValue('roomNum')>0 && Number(this.form.getFieldValue('price'))>0 && Number(this.form.getFieldValue('price'))<=10000) {
+                        this.set_addRoomParams(data)
+                        this.addRoom()
+                    }
+                    else if(Number(this.form.getFieldValue('price'))<=0){
+                        message.error('房价必须为正数')
+
+                    }
+                    else if(Number(this.form.getFieldValue('price'))>10000){
+                        message.error('房价过高，小心被查水表')
+                    }
+                    else if(this.form.getFieldValue('roomNum')<=0){
+                        message.error('录入房间数必须大于0')
+                    }
+
                 }
             });
         },

@@ -17,4 +17,10 @@ public interface HotelMapper {
     List<HotelVO> selectAllHotel();
 
     HotelVO selectById(@Param("id") Integer id);
+
+    int deleteHotel(@Param("hotelId") int hotelId);
+
+    int updateHotel(@Param("hotel") Hotel hotel);
+
+    int updateScore(@Param("value") double value,@Param("hotelId") int hotelId);
 }

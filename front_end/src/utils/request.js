@@ -8,7 +8,8 @@ import router from '../router'
 
 // 创建 axios 实例
 const service = axios.create({
-  baseURL: process.env.NODE_ENV === 'production' ? '': 'http://localhost:8080',
+  baseURL: process.env.NODE_ENV === 'production' ? 'http://backend.aegean19.top:8080': 'http://localhost:8080',
+  // baseURL: 'http://62.234.27.69:8080',
   withCredentials: true
 })
 console.log(process.env.NODE_ENV)

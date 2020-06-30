@@ -90,8 +90,18 @@
               placeholder="手机号"
               v-decorator="[
               'registerPhoneNumber', 
-              {rules: [{ required: true, message: '请输入手机号' }], validateTrigger: 'blur'}]">
+              {rules: [{ required: true, message: '请输入手机号' },{ validator: this.checkNumber }], validateTrigger: 'blur'}]">
               <a-icon slot="prefix" type="book" :style="{ color: 'rgba(0,0,0,.25)' }"/>
+            </a-input>
+          </a-form-item>
+          <a-form-item>
+            <a-input
+              size="large"
+              placeholder="生日"
+              v-decorator="[
+              'registerBirthday',
+              {rules: [{ required: true, message: '请输入生日' },{ validator: this.checkBirthDay }], validateTrigger: 'blur'}]">
+              <a-icon slot="prefix" type="crown" :style="{ color: 'rgba(0,0,0,.25)' }"/>
             </a-input>
           </a-form-item>
           <a-form-item>
@@ -190,6 +200,24 @@ export default {
         }
         callback()
     },
+    checkNumber(rule, value, callback) {
+      const re = /^[0-9]+$/
+      if (re.test(value)) {
+        callback();
+      } else {
+        callback(new Error('请输入数字'));
+      }
+      callback()
+    },
+    checkBirthDay(rule, value, callback){
+      const re = /^([0-9]{4})+-+([0-9]{2})+-+([0-9]{2})$/
+      if (re.test(value)) {
+        callback();
+      } else {
+        callback(new Error('请输入如“xxxx-xx-xx”格式的生日'));
+      }
+      callback()
+    },
     handlePassword(rule, value, callback) {
       if (value.length < 6) {
         callback(new Error('密码长度至少6位'))
@@ -235,13 +263,17 @@ export default {
             email: this.form.getFieldValue('registerUserMail'),
             password: this.form.getFieldValue('registerPassword'),
             phoneNumber: this.form.getFieldValue('registerPhoneNumber'),
-            username: this.form.getFieldValue('registerUsername'),
-            credit: 100,
-            userType: 1
+            birthday: this.form.getFieldValue('registerBirthday'),
+            userName: this.form.getFieldValue('registerUsername'),
+            credit: 1000,
+            userType: 0,
           }
           await this.register(data).then(() => {
             this.customActiveKey = 'tab1'
             this.form.setFieldsValue({
+              'registerUsername':'',
+              'registerPhoneNumber':'',
+              'registerBirthday':'',
               'registerUserMail': '',
               'registerPassword': '',
               'registerPasswordconfirm': ''

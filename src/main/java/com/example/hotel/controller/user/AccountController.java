@@ -2,10 +2,7 @@ package com.example.hotel.controller.user;
 
 import com.example.hotel.bl.user.AccountService;
 import com.example.hotel.po.User;
-import com.example.hotel.vo.UserForm;
-import com.example.hotel.vo.ResponseVO;
-import com.example.hotel.vo.UserInfoVO;
-import com.example.hotel.vo.UserVO;
+import com.example.hotel.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +30,11 @@ public class AccountController {
         return accountService.registerAccount(userVO);
     }
 
+    @GetMapping("/{userId}/getCreditRecord")
+    public ResponseVO getCreditRecord(@PathVariable int userId) {
+        return ResponseVO.buildSuccess(accountService.getCreditRecord(userId));
+    }
+
 
     @GetMapping("/{id}/getUserInfo")
     public ResponseVO getUserInfo(@PathVariable int id) {
@@ -45,8 +47,13 @@ public class AccountController {
 
     @PostMapping("/{id}/userInfo/update")
     public ResponseVO updateInfo(@RequestBody UserInfoVO userInfoVO,@PathVariable int id){
-        return accountService.updateUserInfo(id,userInfoVO.getPassword(),userInfoVO.getUserName(),userInfoVO.getPhoneNumber());
+        return accountService.updateUserInfo(id,userInfoVO.getPassword(),userInfoVO.getUserName(),userInfoVO.getPhoneNumber(),userInfoVO.getBirthday());
+    }
 
+    @PostMapping("/{id}/registerVip")
+    public ResponseVO registerVip(@RequestBody VipInfoVO vipInfoVO, @PathVariable int id){
+        System.out.println("333");
+        return accountService.registerVip(id,vipInfoVO.getVipType(),vipInfoVO.getVipInfo());
     }
 
 }

@@ -3,9 +3,14 @@ package com.example.hotel.blImpl.order;
 import com.example.hotel.bl.hotel.HotelService;
 import com.example.hotel.bl.order.OrderService;
 import com.example.hotel.bl.user.AccountService;
+import com.example.hotel.data.hotel.HotelMapper;
 import com.example.hotel.data.order.OrderMapper;
+import com.example.hotel.data.user.AccountMapper;
+import com.example.hotel.po.CreditRecord;
+import com.example.hotel.po.Hotel;
 import com.example.hotel.po.Order;
 import com.example.hotel.po.User;
+import com.example.hotel.vo.HotelVO;
 import com.example.hotel.vo.OrderVO;
 import com.example.hotel.vo.ResponseVO;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author: chenyizong
@@ -24,12 +30,23 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
     private final static String RESERVE_ERROR = "预订失败";
     private final static String ROOMNUM_LACK = "预订房间数量剩余不足";
+    private final static String ANNUL_ERROR = "撤销失败";
+    private final static String ANNUL_FAIL = "已过可撤销时间";
+    private final static String DO_ERROR = "执行失败";
+    private final static String DO_FAIL = "未到可执行时间";
+    private final static String DELETE_ERROR= "删除失败";
+    private final static String SCORE_ERROR= "评分失败";
+
     @Autowired
     OrderMapper orderMapper;
     @Autowired
     HotelService hotelService;
     @Autowired
     AccountService accountService;
+    @Autowired
+    AccountMapper accountMapper;
+    @Autowired
+    HotelMapper hotelMapper;
 
     @Override
     public ResponseVO addOrder(OrderVO orderVO) {
@@ -71,7 +88,129 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseVO annulOrder(int orderid) {
         //取消订单逻辑的具体实现（注意可能有和别的业务类之间的交互）
+        try{
+            Order order=orderMapper.getOrderById(orderid);
 
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = new Date();
+            String nowDateStr = sf.format(now);
+            String inDateStr = sf.format(order.getCheckInDate());
+            sf.applyPattern("HH");
+            int nowHour=Integer.parseInt(sf.format(now));
+
+            if (nowDateStr.compareTo(inDateStr)>0 || (nowDateStr.compareTo(inDateStr)==0 && nowHour>=18))
+                return ResponseVO.buildFailure(ANNUL_FAIL);
+
+            int roomNums=-order.getRoomNum();
+            hotelService.updateRoomInfo(order.getHotelId(),order.getRoomType(),roomNums);
+            orderMapper.annulOrder(orderid);
+
+            Integer userId = order.getUserId();
+            User user = accountMapper.getAccountById(userId);
+            double newCredit=nowDateStr.compareTo(inDateStr)==0?user.getCredit()-order.getPrice():user.getCredit()-order.getPrice()/2;
+            newCredit= Math.max(newCredit, 0.0);
+            accountMapper.updateCredit(userId,newCredit);
+
+            //更新creditRecord
+            CreditRecord creditRecord=new CreditRecord();
+            creditRecord.setChangeTime(new Date());
+            creditRecord.setChangeValue(nowDateStr.compareTo(inDateStr)==0?-order.getPrice():-order.getPrice()/2);
+            creditRecord.setRestValue(newCredit);
+            creditRecord.setUserId(user.getId());
+            creditRecord.setReason("无故撤销订单");
+            accountMapper.insertCreditRecord(creditRecord);
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseVO.buildFailure(ANNUL_ERROR);
+        }
+        return ResponseVO.buildSuccess(true);
+    }
+
+    /**
+     * @param hotelId
+     * @return
+     */
+    @Override
+    public List<Order> getHotelOrders(Integer hotelId) {
+        List<Order> orders = getAllOrders();
+        return orders.stream().filter(order -> order.getHotelId().equals(hotelId)).collect(Collectors.toList());
+    }
+
+    /**
+     * 执行订单
+     * @param orderid
+     * @return
+     */
+    @Override
+    public ResponseVO doOrder(int orderid) {
+
+        try{
+            Order order=orderMapper.getOrderById(orderid);
+
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            Date now = new Date();
+            String nowDateStr = sf.format(now);
+            String outDateStr = sf.format(order.getCheckOutDate());
+
+            if (nowDateStr.compareTo(outDateStr)<0)
+                return ResponseVO.buildFailure(DO_FAIL);
+
+            int roomNums=-order.getRoomNum();
+            hotelService.updateRoomInfo(order.getHotelId(),order.getRoomType(),roomNums);
+            orderMapper.doOrder(orderid);
+
+            //更新creditRecord
+            Integer userId = order.getUserId();
+            User user = accountMapper.getAccountById(userId);
+            CreditRecord creditRecord=new CreditRecord();
+            creditRecord.setChangeTime(new Date());
+            creditRecord.setChangeValue(order.getPrice());
+            creditRecord.setRestValue(user.getCredit()+order.getPrice());
+            creditRecord.setUserId(user.getId());
+            creditRecord.setReason("完成订单增加信用值");
+            accountMapper.insertCreditRecord(creditRecord);
+            accountMapper.updateCredit(userId,user.getCredit()+order.getPrice());
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseVO.buildFailure(DO_ERROR);
+        }
+
+        return ResponseVO.buildSuccess(true);
+    }
+
+    @Override
+    public ResponseVO deleteOrder(int id){
+        try{
+            orderMapper.deleteOrder(id);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseVO.buildFailure(DELETE_ERROR);
+        }
+        return ResponseVO.buildSuccess(true);
+    }
+
+    @Override
+    public ResponseVO scoreOrder(int value, int orderId) {
+        try{
+            Order order=orderMapper.getOrderById(orderId);
+            int hotelId=order.getHotelId();
+            HotelVO hotel=hotelMapper.selectById(hotelId);
+            double rate=hotel.getRate();
+            int scoreNum=hotel.getScoreNum();
+            if(scoreNum==0){
+                rate=value;
+            }
+            else{
+                rate=(rate*scoreNum+value)/(scoreNum+1);
+                rate = (double)(Math.round(rate*100)/10.00);
+            }
+            hotelMapper.updateScore(rate,hotelId);
+            orderMapper.updateScore(orderId);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return ResponseVO.buildFailure(SCORE_ERROR);
+        }
         return ResponseVO.buildSuccess(true);
     }
 }

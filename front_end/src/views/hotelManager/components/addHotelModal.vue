@@ -32,10 +32,10 @@
                   <a-select-option value="Five">五星级</a-select-option>
                 </a-select>
             </a-form-item>
-            <a-form-item label="手机号" v-bind="formItemLayout">
+            <a-form-item label="联系电话" v-bind="formItemLayout">
                 <a-input
-                    placeholder="请填写手机号"
-                    v-decorator="['phoneNumber', { rules: [{ required: true, message: '请输入手机号' }] }]"
+                    placeholder="请填写联系电话"
+                    v-decorator="['phoneNumber', { rules: [{ required: true, message: '请输入联系电话' }] }]"
                 />
             </a-form-item>
             <a-form-item label="酒店简介" v-bind="formItemLayout">

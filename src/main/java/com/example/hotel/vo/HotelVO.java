@@ -17,8 +17,20 @@ public class HotelVO {
     private String description;
     private String phoneNum;
     private Integer managerId;
+    private String hasBooked="";
+    private String hasCanceled="";
+    private String hasExeced="";
+    private Integer scoreNum;
 
     private List<RoomVO> rooms;
+
+    public void setScoreNum(Integer scoreNum) {
+        this.scoreNum = scoreNum;
+    }
+
+    public Integer getScoreNum() {
+        return scoreNum;
+    }
 
     public Integer getId() {
         return id;
@@ -99,4 +111,18 @@ public class HotelVO {
     public void setManagerId(Integer managerId) {
         this.managerId = managerId;
     }
+
+    public String getHasBooked(){return hasBooked;}
+
+    public void setHasBooked(String hasBooked){this.hasBooked=hasBooked;}
+
+    public String getHasCanceled(){return hasCanceled;}
+
+    public void setHasCanceled(String hasCanceled){this.hasCanceled=hasCanceled;}
+
+    public String getHasExeced(){
+        return hasExeced;
+    }
+
+    public void setHasExeced(String hasExeced){this.hasExeced=hasExeced;}
 }

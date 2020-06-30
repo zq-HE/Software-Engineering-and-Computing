@@ -12,7 +12,14 @@
                     <span>￥{{ text }}</span>
                 </span>
                 <span slot="action" slot-scope="text, record">
-                    <a-button type="primary" @click="order(record)">预定</a-button>
+                    <a-button type="primary" @click="order(record)" v-if="userInfo.credit>0">预定</a-button>
+                    <a-popover title="无法预订原因" v-else>
+                              <template slot="content">
+                                  <div>您当前信用值为：{{userInfo.credit}}</div>
+                                  <div>信用值为0时不可进行预订，请联系客服人员</div>
+                              </template>
+                            <a-button type="danger" size="small">不可预订</a-button>
+                        </a-popover>
                 </span>
             </a-table>
         </div>
@@ -27,21 +34,6 @@ const columns = [
       title: '房型',
       dataIndex: 'roomType',
       key: 'roomType',
-    },
-    {
-      title: '床型',
-      dataIndex: 'bedType',
-      key: 'bedType',
-    },
-    {
-      title: '早餐',
-      dataIndex: 'breakfast',
-      key: 'breakfast',
-    },
-    {
-      title: '入住人数',
-      key: 'peopleNum',
-      dataIndex: 'peopleNum',
     },
     {
       title: '房价',
@@ -72,7 +64,8 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'orderModalVisible'
+            'orderModalVisible',
+            'userInfo'
         ])
     },
     monuted() {

@@ -34,4 +34,10 @@ public interface RoomService {
      * @return
      */
     int getRoomCurNum(Integer hotelId, String roomType);
+
+    /**
+     * 删除一个酒店的所有房间
+     * @param hotelId
+     */
+    void deleteRoomByHotelId(Integer hotelId);
 }

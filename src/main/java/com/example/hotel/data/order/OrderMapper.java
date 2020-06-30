@@ -26,4 +26,9 @@ public interface OrderMapper {
 
     Order getOrderById(@Param("orderid") int orderid);
 
+    int doOrder(@Param("orderid") int orderid);
+
+    int deleteOrder(@Param("orderid") int orderid);
+
+    int updateScore(@Param("orderId")int orderId);
 }

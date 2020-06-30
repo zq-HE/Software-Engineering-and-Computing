@@ -8,12 +8,15 @@ import {
     registerAPI,
     getUserInfoAPI,
     updateUserInfoAPI,
+    getCreditRecordAPI
 } from '@/api/user'
 
 import {
     getUserOrdersAPI,
     cancelOrderAPI,
+    scoreOrderAPI
 } from '@/api/order'
+import {registerVipAPI} from "../../api/user";
 
 const getDefaultState = () => {
     return {
@@ -23,7 +26,8 @@ const getDefaultState = () => {
         },
         userOrderList: [
 
-        ]
+        ],
+        creditRecord:[]
     }
 }
 
@@ -37,7 +41,8 @@ const user = {
             state.userInfo = {
                 
             },
-            state.userOrderList = []
+            state.userOrderList = [],
+            state.creditRecord=[]
         },
         set_token: function(state, token){
             state.token = token
@@ -56,6 +61,9 @@ const user = {
         },
         set_userOrderList: (state, data) => {
             state.userOrderList = data
+        },
+        set_creditRecord:(state,data)=>{
+            state.creditRecord=data
         }
     },
 
@@ -90,6 +98,19 @@ const user = {
               })
             })
         },
+        getCreditRecord: async({ state, commit }) => {
+            const data = {
+                userId: Number(state.userId)
+            }
+            const res = await getCreditRecordAPI(data)
+            if(res){
+                for(var i=0;i<res.length;i++){
+                    res[i].changeTime=res[i].changeTime.substr(0,10)
+                }
+                commit('set_creditRecord', res)
+                console.log(state.creditRecord)
+            }
+        },
         updateUserInfo: async({ state, dispatch }, data) => {
             const params = {
                 id: state.userId,
@@ -107,6 +128,10 @@ const user = {
             }
             const res = await getUserOrdersAPI(data)
             if(res){
+                for(var i=0;i<res.length;i++){
+                    res[i].checkInDate=res[i].checkInDate.substr(0,10)
+                    res[i].checkOutDate=res[i].checkOutDate.substr(0,10)
+                }
                 commit('set_userOrderList', res)
                 console.log(state.userOrderList)
             }
@@ -115,9 +140,36 @@ const user = {
             const res = await cancelOrderAPI(orderId)
             if(res) {
                 dispatch('getUserOrders')
+                dispatch('getUserInfo')
                 message.success('撤销成功')
             }else{
                 message.error('撤销失败')
+            }
+        },
+        scoreOrder:async({state,dispatch},info)=>{
+
+            const res = await scoreOrderAPI({
+                value:info.value,
+                orderId:info.orderId
+            })
+            if(res) {
+                dispatch('getUserOrders')
+                message.success('评分成功')
+            }else{
+                message.error('评分失败')
+            }
+        },
+        registerVip: async({ state, dispatch }, data) => {
+            const params = {
+                id: state.userId,
+                ...data
+            }
+            const res = await registerVipAPI(params)
+            if(res) {
+                message.success('注册会员成功')
+                dispatch('getUserInfo')
+            }else{
+                message.error('注册会员失败！')
             }
         },
         logout: async({ commit }) => {

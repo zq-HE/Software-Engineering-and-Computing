@@ -27,3 +27,26 @@ export function cancelOrderAPI(orderId) {
         method: 'GET',
     })
 }
+export function scoreOrderAPI(params) {
+    console.log(params)
+    return axios({
+        url: `${api.orderPre}/scoreOrder`,
+        method: 'GET',
+        params
+    })
+}
+
+// 执行订单
+export function doOrderAPI(orderId) {
+    return axios({
+        url: `${api.orderPre}/${orderId}/doOrder`,
+        method: 'GET'
+    })
+}
+
+export function deleteOrderAPI(orderId) {
+    return axios({
+        url: `${api.orderPre}/${orderId}/deleteOrder`,
+        method: 'GET',
+    })
+}

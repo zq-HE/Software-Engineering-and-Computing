@@ -30,3 +30,17 @@ export function updateUserInfoAPI(data) {
         data
     })
 }
+export function getCreditRecordAPI(data) {
+    return axios({
+        url: `${api.userPre}/${data.userId}/getCreditRecord`,
+        method: 'GET'
+    })
+}
+
+export function registerVipAPI(data) {
+    return axios({
+        url: `${api.userPre}/${data.id}/registerVip`,
+        method: 'POST',
+        data
+    })
+}

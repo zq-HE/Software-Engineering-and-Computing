@@ -14,13 +14,14 @@ import {
 const hotel = {
     state: {
         hotelList: [
-            
+
         ],
         hotelListParams: {
             pageNo: 0,
             pageSize: 12
         },
         hotelListLoading: true,
+        searchingStr:'',
         currentHotelId: '',
         currentHotelInfo: {
 
@@ -35,6 +36,10 @@ const hotel = {
     },
     mutations: {
         set_hotelList: function(state, data) {
+            // state.hotelList = {
+            //     ...state.hotelList,
+            //     ...data,
+            // }
             state.hotelList = data
         },
         set_hotelListParams: function(state, data) {
@@ -45,6 +50,9 @@ const hotel = {
         },
         set_hotelListLoading: function(state, data) {
             state.hotelListLoading = data
+        },
+        set_searchingStr: function(state, data) {
+            state.searchingStr = data
         },
         set_currentHotelId: function(state, data) {
             state.currentHotelId = data
@@ -70,11 +78,12 @@ const hotel = {
     },
 
     actions: {
-        getHotelList: async({commit, state}) => {
-            const res = await getHotelsAPI()
+        getHotelList: async({commit, state}, userId) => {
+            const res = await getHotelsAPI(userId)
             if(res){
                 commit('set_hotelList', res)
                 commit('set_hotelListLoading', false)
+                commit('set_searchingStr', '')
             }
         },
         getHotelById: async({commit, state}) => {
