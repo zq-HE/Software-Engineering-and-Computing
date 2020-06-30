@@ -95,14 +95,13 @@
             </a-input>
           </a-form-item>
           <a-form-item>
-            <a-input
-              size="large"
-              placeholder="生日"
-              v-decorator="[
-              'registerBirthday',
-              {rules: [{ required: true, message: '请输入生日' },{ validator: this.checkBirthDay }], validateTrigger: 'blur'}]">
-              <a-icon slot="prefix" type="crown" :style="{ color: 'rgba(0,0,0,.25)' }"/>
-            </a-input>
+            <a-date-picker
+                    size="large"
+                    style="width: 100%"
+                    placeholder="请选择生日"
+                    v-decorator="['registerBirthday', { rules: [{ required: true,
+message: '请选择生日' }] }]"
+            />
           </a-form-item>
           <a-form-item>
             <a-input

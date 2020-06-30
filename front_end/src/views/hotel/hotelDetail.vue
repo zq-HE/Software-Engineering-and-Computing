@@ -30,7 +30,7 @@
                         </div>
                         <div class="items" v-if="currentHotelInfo.rate">
                             <span class="label">评分:</span> 
-                            <span class="value">{{ currentHotelInfo.rate }}</span>
+                            <span class="value">{{ currentHotelInfo.rate | numFilter }}</span>
                         </div>
                         <div class="items" v-if="currentHotelInfo.hotelStar">
                             <span class="label">星级:</span> 
@@ -140,6 +140,18 @@ export default {
                 return 5
             }
             return 2
+        }
+    },
+    filters: {
+        numFilter (value) {
+            let realVal = ''
+            if (!isNaN(value) && value!== '') {
+                // 截取当前数据到小数点后两位
+                realVal = parseFloat(value).toFixed(2)
+            } else {
+                realVal = '--'
+            }
+            return realVal
         }
     }
 }
