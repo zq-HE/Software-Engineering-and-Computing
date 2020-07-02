@@ -19,6 +19,7 @@ public class TargetMoneyCouponStrategyImpl implements CouponMatchStrategy {
      */
     @Override
     public boolean isMatch(OrderVO orderVO, Coupon coupon) {
+        //return true;
         try{
             if (coupon.getCouponType() == 3 && orderVO.getPrice() >= coupon.getTargetMoney()) {
                 return true;

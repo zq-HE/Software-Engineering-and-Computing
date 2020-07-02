@@ -35,7 +35,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseVO addManager(UserForm userForm) {
+        //return ResponseVO.buildSuccess(true);
         User user = new User();
+        //将数据从VO转换到PO
         user.setEmail(userForm.getEmail());
         user.setPassword(userForm.getPassword());
         user.setUserName(userForm.getUsername());
@@ -53,7 +55,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseVO updateManager(UserForm userForm,int id) {
+        //return ResponseVO.buildSuccess(true);
         User user = accountService.getUserInfo(id);
+        //将数据从VO转换到PO
         user.setEmail(userForm.getEmail());
         user.setPassword(userForm.getPassword());
         user.setUserName(userForm.getUsername());
@@ -70,7 +74,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseVO addUser(UserForm userForm) {
+        //return ResponseVO.buildSuccess(true);
         User user = new User();
+        //将数据从VO转换到PO
         user.setEmail(userForm.getEmail());
         user.setPassword(userForm.getPassword());
         user.setUserName(userForm.getUsername());
@@ -89,8 +95,10 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseVO updateCredit(int id,String credit) {
+        //return ResponseVO.buildSuccess(true);
         try {
             User user = accountService.getUserInfo(id);
+            //将数据从VO转换到PO
             CreditRecord creditRecord=new CreditRecord();
             creditRecord.setUserId(id);
             creditRecord.setRestValue(user.getCredit()+Double.parseDouble(credit));
@@ -108,14 +116,21 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public List<User> getAllManagers() {
+//        List<User> stub = null;
+//        return stub;
         return adminMapper.getAllManagers();
     }
 
     @Override
-    public List<User> getAllUsers() { return adminMapper.getAllUsers();}
+    public List<User> getAllUsers() {
+//        List<User> stub = null;
+//        return stub;
+        return adminMapper.getAllUsers();
+    }
 
     @Override
     public ResponseVO deleteUser(int userid){
+        //return ResponseVO.buildSuccess(true);
         try{
             adminMapper.deleteUser(userid);
         }catch (Exception e){
@@ -127,7 +142,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public ResponseVO updateUser(int id,UserForm userForm) {
+        //return ResponseVO.buildSuccess(true);
         User user = accountService.getUserInfo(id);
+        //将数据从VO转换到PO，同时判定前端是否传入数据，如果未传入数据则不做更改
         user.setEmail(userForm.getEmail()==null||userForm.getEmail().compareTo("")==0?
                 user.getEmail():userForm.getEmail());
         user.setPassword(userForm.getPassword()==null||userForm.getPassword().compareTo("")==0?

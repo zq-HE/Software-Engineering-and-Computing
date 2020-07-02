@@ -18,6 +18,7 @@ public class TimeCouponStrategyImpl implements CouponMatchStrategy {
      */
     @Override
     public boolean isMatch(OrderVO orderVO, Coupon coupon) {
+        //return true;
         try{
 //            String[] orderStartTime=orderVO.getCheckInDate().split("-");
 //            String[] orderEndTime=orderVO.getCheckOutDate().split("-");

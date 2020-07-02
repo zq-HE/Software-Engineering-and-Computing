@@ -46,6 +46,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<Coupon> getMatchOrderCoupon(OrderVO orderVO) {
+        //return null;
 
         List<Coupon> hotelCoupons = getHotelAllCoupon(orderVO.getHotelId());
 
@@ -64,12 +65,15 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public List<Coupon> getHotelAllCoupon(Integer hotelId) {
+        //return null;
         List<Coupon> hotelCoupons = couponMapper.selectByHotelId(hotelId);
         return hotelCoupons;
     }
 
     @Override
     public CouponVO addHotelTargetMoneyCoupon(HotelTargetMoneyCouponVO couponVO) {
+        //return null;
+        //将数据从VO转换到PO
         Coupon coupon = new Coupon();
         coupon.setCouponName(couponVO.getName());
         coupon.setDescription(couponVO.getDescription());
@@ -85,6 +89,8 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponVO addHotelTimeCoupon(HotelTimeCouponVO couponVO){
+        //return null;
+        //将数据从VO转换到PO
         Coupon coupon = new Coupon();
         coupon.setCouponName(couponVO.getName());
         coupon.setDescription(couponVO.getDescription());
@@ -101,6 +107,8 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponVO addHotelTargetRoomCoupon(HotelTargetRoomCouponVO couponVO) {
+        //return null;
+        //将数据从VO转换到PO
         Coupon coupon = new Coupon();
         coupon.setCouponName(couponVO.getName());
         coupon.setDescription(couponVO.getDescription());
@@ -116,6 +124,8 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public CouponVO addHotelBirthdayCoupon(HotelBirthdayCouponVO couponVO) {
+        //return null;
+        //将数据从VO转换到PO
         Coupon coupon = new Coupon();
         coupon.setCouponName(couponVO.getName());
         coupon.setDescription(couponVO.getDescription());
@@ -130,6 +140,7 @@ public class CouponServiceImpl implements CouponService {
 
     @Override
     public ResponseVO deleteCoupon(int couponId) {
+        //return ResponseVO.buildSuccess(true);
         try{
             couponMapper.deleteCoupon(couponId);
         }catch (Exception e){

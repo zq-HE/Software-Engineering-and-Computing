@@ -50,6 +50,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseVO addOrder(OrderVO orderVO) {
+        //return ResponseVO.buildSuccess(true);
         int reserveRoomNum = orderVO.getRoomNum();
         int curNum = hotelService.getRoomCurNum(orderVO.getHotelId(),orderVO.getRoomType());
         if(reserveRoomNum>curNum){
@@ -65,6 +66,7 @@ public class OrderServiceImpl implements OrderService {
             orderVO.setClientName(user.getUserName());
             orderVO.setPhoneNumber(user.getPhoneNumber());
             Order order = new Order();
+            //将数据从VO转换到PO
             BeanUtils.copyProperties(orderVO,order);
             orderMapper.addOrder(order);
             hotelService.updateRoomInfo(orderVO.getHotelId(),orderVO.getRoomType(),orderVO.getRoomNum());
@@ -77,17 +79,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders() {
+        //return null;
         return orderMapper.getAllOrders();
     }
 
     @Override
     public List<Order> getUserOrders(int userid) {
+        //return null;
         return orderMapper.getUserOrders(userid);
     }
 
     @Override
     public ResponseVO annulOrder(int orderid) {
-        //取消订单逻辑的具体实现（注意可能有和别的业务类之间的交互）
+        //return ResponseVO.buildSuccess(true);
         try{
             Order order=orderMapper.getOrderById(orderid);
 
@@ -98,6 +102,7 @@ public class OrderServiceImpl implements OrderService {
             sf.applyPattern("HH");
             int nowHour=Integer.parseInt(sf.format(now));
 
+            //如果超过预订入住当天下午6点则无法撤销
             if (nowDateStr.compareTo(inDateStr)>0 || (nowDateStr.compareTo(inDateStr)==0 && nowHour>=18))
                 return ResponseVO.buildFailure(ANNUL_FAIL);
 
@@ -105,6 +110,7 @@ public class OrderServiceImpl implements OrderService {
             hotelService.updateRoomInfo(order.getHotelId(),order.getRoomType(),roomNums);
             orderMapper.annulOrder(orderid);
 
+            //根据撤销时间判断减少的信用值为多少
             Integer userId = order.getUserId();
             User user = accountMapper.getAccountById(userId);
             double newCredit=nowDateStr.compareTo(inDateStr)==0?user.getCredit()-order.getPrice():user.getCredit()-order.getPrice()/2;
@@ -133,6 +139,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public List<Order> getHotelOrders(Integer hotelId) {
+        //return null;
         List<Order> orders = getAllOrders();
         return orders.stream().filter(order -> order.getHotelId().equals(hotelId)).collect(Collectors.toList());
     }
@@ -144,7 +151,7 @@ public class OrderServiceImpl implements OrderService {
      */
     @Override
     public ResponseVO doOrder(int orderid) {
-
+        //return ResponseVO.buildSuccess(true)
         try{
             Order order=orderMapper.getOrderById(orderid);
 
@@ -153,6 +160,7 @@ public class OrderServiceImpl implements OrderService {
             String nowDateStr = sf.format(now);
             String outDateStr = sf.format(order.getCheckOutDate());
 
+            //只有退房后才能执行订单
             if (nowDateStr.compareTo(outDateStr)<0)
                 return ResponseVO.buildFailure(DO_FAIL);
 
@@ -181,6 +189,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseVO deleteOrder(int id){
+        //return ResponseVO.buildSuccess(true);
         try{
             orderMapper.deleteOrder(id);
         }catch (Exception e){
@@ -192,6 +201,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseVO scoreOrder(int value, int orderId) {
+        //return ResponseVO.buildSuccess(true);
         try{
             Order order=orderMapper.getOrderById(orderId);
             int hotelId=order.getHotelId();

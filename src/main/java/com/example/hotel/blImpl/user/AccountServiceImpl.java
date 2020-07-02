@@ -25,7 +25,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseVO registerAccount(UserVO userVO) {
+        //return ResponseVO.buildSuccess(true);
         User user = new User();
+        //将数据从VO转换到PO
         user.setBirthday(userVO.getBirthday());
         user.setPhoneNumber(userVO.getPhoneNumber());
         user.setUserName(userVO.getUserName());
@@ -50,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public User login(UserForm userForm) {
+        //return null;
         User user = accountMapper.getAccountByName(userForm.getEmail());
         if (null == user || !user.getPassword().equals(userForm.getPassword())) {
             return null;
@@ -59,12 +62,14 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<CreditRecord> getCreditRecord(int userId) {
+        //return null;
         return accountMapper.getCreditRecord(userId);
     }
 
 
     @Override
     public User getUserInfo(int id) {
+        //return null;
         User user = accountMapper.getAccountById(id);
         if (user == null) {
             return null;
@@ -74,6 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseVO updateUserInfo(int id, String password, String username, String phonenumber, Date birthday) {
+        //return ResponseVO.buildSuccess(true);
         User userInfo = getUserInfo(id);
         if (birthday==null) birthday=userInfo.getBirthday();
         try {
@@ -87,6 +93,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public ResponseVO registerVip(int id, String vipType, String vipInfo) {
+        //return ResponseVO.buildSuccess(true);
         try {
             accountMapper.registerVip(id, vipType,vipInfo);
         } catch (Exception e) {

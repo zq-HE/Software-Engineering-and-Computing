@@ -49,6 +49,7 @@ public class HotelServiceImpl implements HotelService {
             throw new ServiceException("管理员不存在或者无权限！创建酒店失败！");
         }
         Hotel hotel = new Hotel();
+        //将数据从VO转换到PO
         hotel.setDescription(hotelVO.getDescription());
         hotel.setAddress(hotelVO.getAddress());
         hotel.setHotelName(hotelVO.getName());
@@ -67,20 +68,24 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public int getRoomCurNum(Integer hotelId, String roomType) {
+        //return 0;
         return roomService.getRoomCurNum(hotelId, roomType);
     }
 
     @Override
     public List<HotelVO> retrieveHotels(String _userId) {
+        //return null;
         try {
             int userId = Integer.parseInt(_userId);
             List<HotelVO> hotels = hotelMapper.selectAllHotel();
             List<Order> orders = orderService.getUserOrders(userId);
+            //从数据库中读取出列表时对酒店预订状态进行初始化
             for(HotelVO hotelVO: hotels){
                 hotelVO.setHasBooked("未曾预订");
                 hotelVO.setHasCanceled("未曾撤销");
                 hotelVO.setHasExeced("未曾执行");
             }
+            //若该顾客有相应订单，则对相应酒店状态进行赋值
             for (int i = 0; i < hotels.size(); i++) {
                 HotelVO hotelVO = hotels.get(i);
                 for (int j = 0; j < orders.size(); j++) {
@@ -110,6 +115,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelVO retrieveHotelDetails(Integer hotelId) {
+        //return null;
         HotelVO hotelVO = hotelMapper.selectById(hotelId);
         List<HotelRoom> rooms = roomService.retrieveHotelRoomInfo(hotelId);
         List<RoomVO> roomVOS = rooms.stream().map(r -> {
@@ -128,6 +134,7 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public ResponseVO deleteHotel(int hotelId) {
+        //return ResponseVO.buildSuccess(true);
         try {
             hotelMapper.deleteHotel(hotelId);
             roomService.deleteRoomByHotelId(hotelId);

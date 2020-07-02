@@ -16,6 +16,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<HotelRoom> retrieveHotelRoomInfo(Integer hotelId) {
+        //return null;
         return roomMapper.selectRoomsByHotelId(hotelId);
     }
 
@@ -24,6 +25,7 @@ public class RoomServiceImpl implements RoomService {
         System.out.println(hotelRoom.getRoomType().getRawString());
         try {
             int roomCurNum = roomMapper.getRoomCurNum(hotelRoom.getHotelId(), hotelRoom.getRoomType().getRawString());
+            //如果房型已经存在，则只做添加操作而非重新插入字段
             if (roomCurNum > 0)
                 roomMapper.addRoomTotalNum(hotelRoom.getHotelId(), hotelRoom.getRoomType().getRawString(), hotelRoom.getTotal());
         } catch (Exception e){roomMapper.insertRoom(hotelRoom);}
@@ -36,6 +38,7 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public int getRoomCurNum(Integer hotelId, String roomType) {
+        //return 0;
         return roomMapper.getRoomCurNum(hotelId,roomType);
     }
 

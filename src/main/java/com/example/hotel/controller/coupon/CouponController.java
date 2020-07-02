@@ -68,9 +68,11 @@ public class CouponController {
         requestOrderVO.setPrice(orderPrice);
         requestOrderVO.setRoomNum(roomNum);
         try{
+            //将输入的String格式的日期转换为Date格式
             requestOrderVO.setCheckInDate(sf.parse(checkIn));
             requestOrderVO.setCheckOutDate(sf.parse(checkOut));
         }catch (Exception e){
+            //如果输入不合法就设置为null
             requestOrderVO.setCheckInDate(null);
             requestOrderVO.setCheckOutDate(null);
         }
